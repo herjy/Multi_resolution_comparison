@@ -4,5 +4,6 @@ A repository of notebooks that show the comparison between the resampling scheme
 Requires 
 * Galsim
 * scarlet
+* astropy
 * Numpy
 * Matplotlib
