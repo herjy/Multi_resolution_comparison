@@ -203,7 +203,7 @@ def setup_scarlet(data_hr, data_lr, psf_hr, psf_lr, channels):
     # This implementation is a bit of a hack and will be refined in the future
     obs = [obs_lr, obs_hr]
     
-    frame = scarlet.Frame.from_observations(obs, obs_id = 1, coverage = 'union')
+    frame = scarlet.Frame.from_observations(obs, obs_id = 1, coverage = 'intersection')
     return obs
     
 def interp_galsim(data_hr, data_lr, diff_psf, angle, h_hr, h_lr):
