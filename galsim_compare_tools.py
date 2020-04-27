@@ -9,14 +9,14 @@ def load_surveys():
     """Creates dictionaries for the HST, EUCLID, WFRIST, HCS anf LSST surveys
     that contain their names, pixel sizes and psf fwhm in arcseconds"""
     pix_wfirst = 0.11
-    pix_LSST = 0.2
+    pix_RUBIN = 0.2
     pix_HST = 0.06
     pix_Euclid = 0.1
     pix_HSC = 0.167
     
     #Sigma of the psf profile in arcseconds.
     sigma_wfirst = 1.69*0.11 #https://arxiv.org/pdf/1702.01747.pdf Z-band
-    sigma_LSST = 0.7 #https://www.lsst.org/about/camera/features
+    sigma_RUBIN = 0.7 #https://www.lsst.org/about/camera/features
     sigma_Euclid = 0.16 #https://sci.esa.int/documents/33859/36320/1567253682555-Euclid_presentation_Paris_1Dec2009.pdf
     sigma_HST = 0.074 #Source https://hst-docs.stsci.edu/display/WFC3IHB/6.6+UVIS+Optical+Performance#id-6.6UVISOpticalPerformance-6.6.1 800nm
     sigma_HSC = 0.62 #https://hsc-release.mtk.nao.ac.jp/doc/ deep+udeep
@@ -25,11 +25,11 @@ def load_surveys():
     HST = {'name': 'HST', 'pixel': pix_HST,'psf': sigma_HST}
     HSC = {'name': 'HSC', 'pixel': pix_HSC,'psf': sigma_HSC}
     WFIRST = {'name': 'WFIRST', 'pixel': pix_wfirst,'psf': sigma_wfirst}
-    LSST = {'name': 'LSST', 'pixel': pix_LSST,'psf': sigma_LSST}
+    RUBIN = {'name': 'RUBIN', 'pixel': pix_RUBIN,'psf': sigma_RUBIN}
     
-    return HST, EUCLID, WFIRST, HSC, LSST
+    return HST, EUCLID, WFIRST, HSC, RUBIN
 
-HST, EUCLID, WFIRST, HSC, LSST = load_surveys()
+HST, EUCLID, WFIRST, HSC, RUBIN = load_surveys()
 
 def mk_wcs(theta, pix, center, shape):
     '''Creates wcs for an image
@@ -165,7 +165,7 @@ def mk_sim(k, hr_dir, lr_dir, shape_hr, shape_lr, npsf, cat):
    
     return im_hr, im_lr, psf_hr[None,:,:], psf_lr[None,:,:], theta
 
-def setup_scarlet(data_hr, data_lr, psf_hr, psf_lr, channels):
+def setup_scarlet(data_hr, data_lr, psf_hr, psf_lr, channels, coverage = 'union'):
     '''Performs the initialisation steps for scarlet to run its resampling scheme
     
     Prameters
@@ -189,11 +189,6 @@ def setup_scarlet(data_hr, data_lr, psf_hr, psf_lr, channels):
     #Extract data
     im_hr = data_hr.array[None, :, :]
     im_lr = data_lr.array[None, :, :]
-
-    _,n1,n2 = im_hr.shape
-    shape = (len(channels), n1,n2)
-    # Initialize the frame using the PSFs and WCSs
-    frame = scarlet.Frame(shape, wcs=data_hr.wcs, psfs=psf_hr, channels=channels)
     
     # define two observation objects and match to frame  
     obs_hr = scarlet.Observation(im_hr, wcs=data_hr.wcs, psfs=psf_hr, channels=[channels[1]])
@@ -203,7 +198,7 @@ def setup_scarlet(data_hr, data_lr, psf_hr, psf_lr, channels):
     # This implementation is a bit of a hack and will be refined in the future
     obs = [obs_lr, obs_hr]
     
-    frame = scarlet.Frame.from_observations(obs, obs_id = 1, coverage = 'intersection')
+    scarlet.Frame.from_observations(obs, obs_id = 1, coverage = coverage)
     return obs
     
 def interp_galsim(data_hr, data_lr, diff_psf, angle, h_hr, h_lr):
