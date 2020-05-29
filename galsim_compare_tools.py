@@ -3,35 +3,35 @@ from astropy import wcs as WCS
 import numpy as np
 import scarlet
 
-center_ra = 19.3*galsim.hours     # The RA, Dec of the center of the image on the sky
+center_ra = 19.3*galsim.degrees     # The RA, Dec of the center of the image on the sky
 center_dec = -33.1*galsim.degrees
 def load_surveys():
     """Creates dictionaries for the HST, EUCLID, WFRIST, HCS anf LSST surveys
     that contain their names, pixel sizes and psf fwhm in arcseconds"""
-    pix_wfirst = 0.11
+    pix_ROMAN = 0.11
     pix_RUBIN = 0.2
     pix_HST = 0.06
-    pix_Euclid = 0.1
+    pix_EUCLID = 0.1
     pix_HSC = 0.167
     
     #Sigma of the psf profile in arcseconds.
-    sigma_wfirst = 1.69*0.11 #https://arxiv.org/pdf/1702.01747.pdf Z-band
+    sigma_ROMAN = 1.69*0.11 #https://arxiv.org/pdf/1702.01747.pdf Z-band
     sigma_RUBIN = 0.7 #https://www.lsst.org/about/camera/features
-    sigma_Euclid = 0.16 #https://sci.esa.int/documents/33859/36320/1567253682555-Euclid_presentation_Paris_1Dec2009.pdf
+    sigma_EUCLID = 0.16 #https://sci.esa.int/documents/33859/36320/1567253682555-Euclid_presentation_Paris_1Dec2009.pdf
     sigma_HST = 0.074 #Source https://hst-docs.stsci.edu/display/WFC3IHB/6.6+UVIS+Optical+Performance#id-6.6UVISOpticalPerformance-6.6.1 800nm
     sigma_HSC = 0.62 #https://hsc-release.mtk.nao.ac.jp/doc/ deep+udeep
     
-    EUCLID = {'name': 'EUCLID', 'pixel': pix_Euclid ,'psf': sigma_Euclid}
+    EUCLID = {'name': 'EUCLID', 'pixel': pix_EUCLID ,'psf': sigma_EUCLID}
     HST = {'name': 'HST', 'pixel': pix_HST,'psf': sigma_HST}
     HSC = {'name': 'HSC', 'pixel': pix_HSC,'psf': sigma_HSC}
-    WFIRST = {'name': 'WFIRST', 'pixel': pix_wfirst,'psf': sigma_wfirst}
+    ROMAN = {'name': 'ROMAN', 'pixel': pix_ROMAN,'psf': sigma_ROMAN}
     RUBIN = {'name': 'RUBIN', 'pixel': pix_RUBIN,'psf': sigma_RUBIN}
     
-    return HST, EUCLID, WFIRST, HSC, RUBIN
+    return HST, EUCLID, ROMAN, HSC, RUBIN
 
-HST, EUCLID, WFIRST, HSC, RUBIN = load_surveys()
+HST, EUCLID, ROMAN, HSC, RUBIN = load_surveys()
 
-def mk_wcs(theta, pix, center, shape):
+def mk_wcs(theta, pix, center, shape, naxis = 2):
     '''Creates wcs for an image
     
     Parameters
@@ -64,18 +64,17 @@ def mk_wcs(theta, pix, center, shape):
     sky_center = galsim.CelestialCoord(ra=center_ra, dec=center_dec)
     #Creating WCS
     w = WCS.WCS(naxis=2)
-    galfit_wcs = galsim.TanWCS(affine, sky_center, units=galsim.arcsec)
+    galsim_wcs = galsim.TanWCS(affine, sky_center, units=galsim.arcsec)
 
     w.wcs.ctype = ["RA---AIR", "DEC--AIR"]
-    w.wcs.crpix = galfit_wcs.crpix
-
-    w.wcs.pc = galfit_wcs.cd
-    w.wcs.crval = [galfit_wcs.center._ra._rad, galfit_wcs.center._dec._rad]
+    w.wcs.crpix = galsim_wcs.crpix
+    w.wcs.pc = galsim_wcs.cd
+    w.wcs.crval = [galsim_wcs.center._ra._rad, galsim_wcs.center._dec._rad]
     w.array_shape = shape
     return w
     
 
-def mk_sim(k, hr_dir, lr_dir, shape_hr, shape_lr, npsf, cat):
+def mk_sim(k, hr_dir, lr_dir, shape_hr, shape_lr, npsf, cat, shift = (0,0)):
     '''creates low and high resolution images of a galaxy profile with different psfs from the list of galaxies in the COSMOS catalog
     
     Parameters
@@ -110,6 +109,7 @@ def mk_sim(k, hr_dir, lr_dir, shape_hr, shape_lr, npsf, cat):
     pix_lr = lr_dir['pixel']
     sigma_hr = hr_dir['psf']
     sigma_lr = lr_dir['psf']
+ 
     #Rotation angle
     theta = np.random.randn(1)*np.pi*0
     angle = galsim.Angle(theta,galsim.radians)
@@ -119,8 +119,8 @@ def mk_sim(k, hr_dir, lr_dir, shape_hr, shape_lr, npsf, cat):
     im_lr = galsim.Image(shape_lr[0], shape_lr[1], scale=pix_lr)
     
     #Galaxy profile
-    gal = cat.makeGalaxy(k, gal_type = 'real', noise_pad_size=shape_lr[0] * pix_lr*0)
-    
+    gal = cat.makeGalaxy(k, gal_type = 'real', noise_pad_size=shape_lr[0] * pix_lr)
+    gal = gal.shift(dx=shift[0], dy=shift[1])
     ## PSF is a Moffat profile dilated to the sigma of the corresponding survey
     psf_hr_int = galsim.Moffat(2, HST['pixel']).dilate(sigma_hr/HST['psf']).withFlux(1.)
     ## Draw PSF
@@ -155,15 +155,45 @@ def mk_sim(k, hr_dir, lr_dir, shape_hr, shape_lr, npsf, cat):
                                                        use_true_center = True, method = 'no_pixel',
                                                    scale = pix_hr, dtype = np.float64)
     # Convolve galaxy profile by PSF, rotate and sample at low resolution
-    im_lr = galsim.Convolve(gal.rotate(angle), psf_lr_int).drawImage(nx=shape_lr[0],ny=shape_lr[1], 
-                                                                     use_true_center = True, method = 'no_pixel',
-                                                                 scale = pix_lr, dtype = np.float64)
-    
+    im_lr = galsim.Convolve(gal.rotate(angle), psf_lr_int).drawImage(nx=shape_lr[0],ny=shape_lr[1], use_true_center = True, method = 'no_pixel',scale = pix_lr, dtype = np.float64)
     # Make WCSs
     im_hr.wcs = mk_wcs(0, pix_hr, galsim.PositionD(im_hr.true_center), shape_hr)
     im_lr.wcs = mk_wcs(0, pix_lr, galsim.PositionD(im_lr.true_center), shape_lr)
    
     return im_hr, im_lr, psf_hr[None,:,:], psf_lr[None,:,:], theta
+
+def mk_scene(hr_dict, lr_dict, cat, shape_hr, shape_lr, n_gal):
+    """ Generates blended scenes at two resolutions
+    
+    Parameters
+    ----------
+    hr_dict, lr_dict: dictionaries
+        two dictionaries that contain the information for surveys (pixel scale, name and psf size)
+    cat: catalog
+        catalog of sources for galsim
+    shape_hr, shape_lr: tuples
+        2D shapes of the desired images for surveys indicated in the dictionaries
+    ngal: int
+        number of galaxies to draw on the scene
+    """
+    pix_hr = hr_dict['pixel']
+    
+    lr = 0
+    hr = 0
+    loc = []
+    for i in range(n_gal):
+        k = np.int(np.random.rand(1)*len(cat))
+        shift = (np.random.rand(2)-0.5) * shape_hr * pix_hr / 2
+        ihr, ilr, phr, plr, _ = mk_sim(k, hr_dict, lr_dict, 
+                                       shape_hr, shape_lr, 41, cat, 
+                                       shift = shift)
+        sed = np.random.rand(3)*0.8+0.2
+        hr += ihr.array*(np.random.rand(1)*0.8+0.2)
+        lr += ilr.array[None, :, :] * sed[:, None, None]
+        loc.append([shift[0]/pix_hr+shape_hr[0]/2,shift[1]/pix_hr+shape_hr[1]/2])
+    lr += np.random.randn(*lr.shape) * np.sum(lr**2)**0.5/np.size(lr) * 8 / sed[:, None, None]
+    plr = plr * np.ones(3)[:, None, None]
+    return hr, lr, ihr.wcs, ilr.wcs, phr, plr, np.array(loc)
 
 def setup_scarlet(data_hr, data_lr, psf_hr, psf_lr, channels, coverage = 'union'):
     '''Performs the initialisation steps for scarlet to run its resampling scheme
