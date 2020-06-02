@@ -74,7 +74,7 @@ def mk_wcs(theta, pix, center, shape, naxis = 2):
     return w
     
 
-def mk_sim(k, hr_dir, lr_dir, shape_hr, shape_lr, npsf, cat, shift = (0,0)):
+def mk_sim(k, hr_dir, lr_dir, shape_hr, shape_lr, npsf, cat, shift = (0,0), gal_type = 'real'):
     '''creates low and high resolution images of a galaxy profile with different psfs from the list of galaxies in the COSMOS catalog
     
     Parameters
@@ -119,7 +119,7 @@ def mk_sim(k, hr_dir, lr_dir, shape_hr, shape_lr, npsf, cat, shift = (0,0)):
     im_lr = galsim.Image(shape_lr[0], shape_lr[1], scale=pix_lr)
     
     #Galaxy profile
-    gal = cat.makeGalaxy(k, gal_type = 'real', noise_pad_size=shape_lr[0] * pix_lr)
+    gal = cat.makeGalaxy(k, gal_type = gal_type, noise_pad_size=shape_lr[0] * pix_lr *0)
     gal = gal.shift(dx=shift[0], dy=shift[1])
     ## PSF is a Moffat profile dilated to the sigma of the corresponding survey
     psf_hr_int = galsim.Moffat(2, HST['pixel']).dilate(sigma_hr/HST['psf']).withFlux(1.)
@@ -162,7 +162,7 @@ def mk_sim(k, hr_dir, lr_dir, shape_hr, shape_lr, npsf, cat, shift = (0,0)):
    
     return im_hr, im_lr, psf_hr[None,:,:], psf_lr[None,:,:], theta
 
-def mk_scene(hr_dict, lr_dict, cat, shape_hr, shape_lr, n_gal):
+def mk_scene(hr_dict, lr_dict, cat, shape_hr, shape_lr, n_gal, gal_type):
     """ Generates blended scenes at two resolutions
     
     Parameters
@@ -186,12 +186,14 @@ def mk_scene(hr_dict, lr_dict, cat, shape_hr, shape_lr, n_gal):
         shift = (np.random.rand(2)-0.5) * shape_hr * pix_hr / 2
         ihr, ilr, phr, plr, _ = mk_sim(k, hr_dict, lr_dict, 
                                        shape_hr, shape_lr, 41, cat, 
-                                       shift = shift)
-        sed = np.random.rand(3)*0.8+0.2
-        hr += ihr.array*(np.random.rand(1)*0.8+0.2)
-        lr += ilr.array[None, :, :] * sed[:, None, None]
+                                       shift = shift, gal_type = gal_type)
+        sed_lr = np.random.rand(3)*0.8+0.2
+        sed_hr = np.random.rand(1)*15
+        hr += ihr.array * sed_hr
+        lr += ilr.array[None, :, :] * sed_lr[:, None, None]
         loc.append([shift[0]/pix_hr+shape_hr[0]/2,shift[1]/pix_hr+shape_hr[1]/2])
-    lr += np.random.randn(*lr.shape) * np.sum(lr**2)**0.5/np.size(lr) * 8 / sed[:, None, None]
+    lr += np.random.randn(*lr.shape) * np.sum(lr**2)**0.5/np.size(lr) * 10 / sed_lr[:, None, None]
+    hr += np.random.randn(*hr.shape) * np.max(hr)/200
     plr = plr * np.ones(3)[:, None, None]
     return hr, lr, ihr.wcs, ilr.wcs, phr, plr, np.array(loc)
 
