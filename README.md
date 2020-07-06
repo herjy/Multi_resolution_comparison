@@ -4,7 +4,7 @@ A repository of notebooks that show the comparison between the resampling scheme
 This repository also contains simulations for multi-resolution scenes (requires galsim). 
 The folders in this repo are organised as follows:
 
-* `mr_tools` contains the mr_tools package which holds functions that create multi-resolution galsim simulations. Install it by running the following line in the mr_tools directory:
+* `mr_tools` contains the mr_tools package which holds functions that create multi-resolution galsim simulations. Install it by running 
 ```
 python setup.py install 
 ```
