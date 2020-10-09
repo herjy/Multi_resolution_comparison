@@ -1,18 +1,26 @@
 import galsim
-from astropy import wcs as WCS
-import numpy as np
-import scipy.signal as scp
 import scarlet
-from scarlet_extensions.initialization.detection import Data
-import pickle
-import matplotlib.pyplot as plt
 from . import pictures
 
 center_ra = 19.3*galsim.degrees     # The RA, Dec of the center of the image on the sky
 center_dec = -33.1*galsim.degrees
 
 
-def mk_scene(hr_dict, lr_dict, cat, shape_hr, shape_lr, n_gal, gal_type):
+def mk_scene(hr_dict,
+             lr_dict,
+             cat,
+             shape_hr,
+             shape_lr,
+             n_gal,
+             gal_type,
+             random_seds = True,
+             noise = True,
+             pt_fraction = 0,
+             magmin=20,
+             magmax=29,
+             index = None,
+             use_cat = True,
+             shift=True):
     """ Generates blended scenes at two resolutions
 
     Parameters
@@ -27,13 +35,31 @@ def mk_scene(hr_dict, lr_dict, cat, shape_hr, shape_lr, n_gal, gal_type):
         number of galaxies to draw on the scene
     gal_type: 'string'
         either use 'real' or 'parametric' light profiles.
+    pt_fraction: float
+            fraction of point sources
     """
+    pic_hr = pictures.Pictures(hr_dict, shape_hr, cat=cat, pt_fraction = pt_fraction)
+    pic_lr = pictures.Pictures(lr_dict, shape_lr, cat=cat)
 
-    pic_hr = pictures.Pictures(hr_dict, shape_hr, cat = cat)
-    pic_lr = pictures.Pictures(lr_dict, shape_lr, cat = cat)
-
-    pic_hr.make_cube(n_gal, gal_type = gal_type)
-    pic_lr.make_cube(n_gal, pic_hr, gal_type = gal_type)
+    pic_hr.make_cube(n_gal,
+                     gal_type=gal_type,
+                     random_seds=random_seds,
+                     noisy=noise,
+                     magmin=magmin,
+                     magmax=magmax,
+                     index=index,
+                     use_cat=use_cat,
+                     shifty=shift)
+    pic_lr.make_cube(n_gal,
+                     picture=pic_hr,
+                     gal_type=gal_type,
+                     random_seds=random_seds,
+                     noisy=noise,
+                     magmin=magmin,
+                     magmax=magmax,
+                     index=index,
+                     use_cat=use_cat,
+                     shifty=shift)
 
     return pic_hr, pic_lr
 
@@ -61,17 +87,16 @@ def setup_scarlet(data_hr, data_lr, wcs_hr, wcs_lr, psf_hr, psf_lr, channels, co
     #Extract data
     im_hr = data_hr[None, :, :]
     im_lr = data_lr[None, :, :]
-
     # define two observation objects and match to frame
-    obs_hr = scarlet.Observation(im_hr, wcs=wcs_hr, psfs=psf_hr, channels=[channels[1]])
-    obs_lr = scarlet.Observation(im_lr, wcs=wcs_lr, psfs=psf_lr, channels=[channels[0]])
+    obs_hr = scarlet.Observation(im_hr, [channels[1]], wcs=wcs_hr, psf=psf_hr)
+    obs_lr = scarlet.Observation(im_lr, [channels[0]], wcs=wcs_lr, psf=psf_lr)
 
     # Keep the order of the observations consistent with the `channels` parameter
     # This implementation is a bit of a hack and will be refined in the future
     obs = [obs_lr, obs_hr]
 
-    scarlet.Frame.from_observations(obs, obs_id = 1, coverage = coverage)
-    return obs
+    frame = scarlet.Frame.from_observations(obs, obs_id = 1, coverage = coverage)
+    return obs, frame
 
 def interp_galsim(data_hr, data_lr, diff_psf, angle, h_hr, h_lr):
     '''Apply resampling from galsim
@@ -112,22 +137,9 @@ def interp_galsim(data_hr, data_lr, diff_psf, angle, h_hr, h_lr):
     conv_gal = galsim.Convolve(rot_gal, diff_psf)
 
     # Downsamples to low resolution
-    interp_gal = conv_gal.drawImage(nx=n_lr,ny=n_lr, scale=h_lr, method = 'no_pixel',)
+    interp_gal = conv_gal.drawImage(nx=n_lr,ny=n_lr, scale=h_lr, method='no_pixel',)
 
     return interp_gal
-
-def SDR(X_true, X):
-    """Source distortion ratio between an expected value and its estimate. The higher the SDR the better X_true and X agree"""
-    return 10*np.log10(np.sum(X_true**2)**0.5/np.sum((X_true-X)**2)**0.5)
-
-def chi(image, model):
-    return image.shape[0]/image.size*(np.sum((image - model)**2, axis = (-2,-1))/scarlet.wavelet.mad_wavelet(image)**2)
-
-
-
-
-
-
 
 
 
