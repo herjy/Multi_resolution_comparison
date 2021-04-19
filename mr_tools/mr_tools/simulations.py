@@ -485,7 +485,7 @@ class Simulation:
             plt.title('SDR per VIS mag bin', fontsize=40)
             vmags = np.concatenate(self.results[1]['mags'])[:,0]
             min_mags = 20
-            max_mags = 28
+            max_mags = 27
             xmags = np.linspace(min_mags, max_mags, max_mags-min_mags+1)
             bin_size = xmags[1]-xmags[0]
 
@@ -507,16 +507,19 @@ class Simulation:
                 std_mag = []
                 for b in xmags:
 
-                    binned_mag.append(np.mean(sdrs[np.abs(vmags-b) < bin_size/2.]))
-                    std_mag.append(np.std(sdrs[np.abs(vmags-b) < bin_size/2.]))
+                    binned_mag.append(np.mean(sdrs[np.abs(vmags-b-0.5) < bin_size/2.]))
+                    std_mag.append(np.std(sdrs[np.abs(vmags-b-0.5) < bin_size/2.]))
 
-                plt.errorbar(xmags+shift, binned_mag, yerr = std_mag,
-                                    label = r['resolution'],
-                                    ms = 7,
-                                    capsize = 3,
-                                    fmt = '--'+color,
-                                    elinewidth=3,
-                                    alpha = alpha)
+                plt.errorbar(xmags+shift+0.5,
+                             binned_mag,
+                             xerr=0.5,
+                             yerr = std_mag,
+                             label = r['resolution'],
+                             ms = 7,
+                             capsize = 3,
+                             fmt = '--'+color,
+                             elinewidth=3,
+                             alpha = alpha)
                 #plt.plot(mags, sdrs, color, label=r['resolution'], alpha = 0.2)
                 plt.xlabel('VIS magnitude', fontsize=30)
                 plt.ylabel('SDR', fontsize=30)
@@ -548,16 +551,19 @@ class Simulation:
                 std_mag = []
                 for b in xmags:
 
-                    binned_mag.append(np.mean(sdrs[np.abs(rmags-b) < bin_size/2.]))
-                    std_mag.append(np.std(sdrs[np.abs(rmags-b) < bin_size/2.]))
+                    binned_mag.append(np.mean(sdrs[np.abs(rmags-b-0.5) < bin_size/2.]))
+                    std_mag.append(np.std(sdrs[np.abs(rmags-b-0.5) < bin_size/2.]))
 
-                plt.errorbar(xmags+shift, binned_mag, yerr=std_mag,
-                                    label=r['resolution'],
-                                    ms=7,
-                                    capsize=3,
-                                    fmt='--'+color,
-                                    elinewidth=3,
-                                    alpha=alpha)
+                plt.errorbar(xmags+shift+0.5,
+                             binned_mag,
+                             xerr=0.5,
+                             yerr=std_mag,
+                             label=r['resolution'],
+                             ms=7,
+                             capsize=3,
+                             fmt='--'+color,
+                             elinewidth=3,
+                             alpha=alpha)
 
                 plt.xlabel('min Rubin magnitude', fontsize=30)
                 plt.ylabel('SDR', fontsize=30)
@@ -591,9 +597,9 @@ class Simulation:
                 counts = np.zeros((len(xmags), len(xmags)))
                 std_mag = np.zeros((len(xmags), len(xmags)))
                 for ib,b in enumerate(xmags):
-                    vcond = np.abs(vmags-b) < bin_size/2.
+                    vcond = np.abs(vmags-b-0.5) < bin_size/2.
                     for ic, c in enumerate(xmags):
-                        rcond = np.abs(rmags-c) < bin_size/2.
+                        rcond = np.abs(rmags-c-0.5) < bin_size/2.
                         binned_mag[ib,ic] = (np.mean(sdrs[vcond*rcond]))
                         std_mag[ib,ic] = (np.std(sdrs[vcond*rcond]))
                         counts[ib,ic] = np.size(sdrs[vcond*rcond])
@@ -607,8 +613,8 @@ class Simulation:
                 plt.xlim((-0.5, max_mags-min_mags+.5))
                 plt.ylabel('VIS mag', fontsize = 55)
                 plt.xlabel('Min Rubin mag', fontsize = 55)
-                plt.xticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2], fontsize = 45)
-                plt.yticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2], fontsize = 45)
+                plt.xticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2]+0.5, fontsize = 45)
+                plt.yticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2]+0.5, fontsize = 45)
 
                 sdr_tab.append(binned_mag)
                 sdr_std_tab.append(std_mag)
@@ -626,8 +632,8 @@ class Simulation:
             plt.xlim((-0.5, max_mags-min_mags+.5))
             plt.ylabel('VIS mag', fontsize=55)
             plt.xlabel('Min Rubin mag', fontsize=55)
-            plt.xticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2], fontsize=45)
-            plt.yticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2], fontsize=45)
+            plt.xticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2]+0.5, fontsize=45)
+            plt.yticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2]+0.5, fontsize=45)
 
             amp = np.nanmax(np.abs(sdr_tab[1] - sdr_tab[-1]))
             plt.subplot(122)
@@ -639,8 +645,8 @@ class Simulation:
             plt.xlim((-0.5, max_mags-min_mags+.5))
             plt.ylabel('VIS mag', fontsize=55)
             plt.xlabel('Min Rubin mag', fontsize=55)
-            plt.xticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2], fontsize=45)
-            plt.yticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2], fontsize=45)
+            plt.xticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2]+0.5, fontsize=45)
+            plt.yticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2]+0.5, fontsize=45)
             plt.savefig('Single_vs_joint.png')
             plt.show()
 
@@ -657,24 +663,27 @@ class Simulation:
             plt.figure(figsize = (16,12))
             plt.suptitle('SDRs at equal magnitudes', fontsize = 50)
 
-            plt.errorbar(xmags - 0.02,
+            plt.errorbar(xmags - 0.02+0.5,
                          diags[0],
+                         xerr=0.5,
                          yerr=diags_std[0],
                          fmt='--og',
                          ms=7,
                          capsize=3,
                          elinewidth=3,
                          label='Rubin min mag')
-            plt.errorbar(xmags,
+            plt.errorbar(xmags+0.5,
                          diags[1],
+                         xerr=0.5,
                          yerr=diags_std[1],
                          fmt='--ob',
                          ms=7,
                          capsize=3,
                          elinewidth=3,
                          label='Euclid VIS mag')
-            plt.errorbar(xmags + 0.02,
+            plt.errorbar(xmags + 0.02+0.5,
                          diags[2],
+                         xerr=0.5,
                          yerr=diags_std[2],
                          fmt='--or',
                          ms=7,
@@ -701,8 +710,8 @@ class Simulation:
             plt.xlim((-0.5, max_mags-min_mags+.5))
             plt.ylabel('VIS mag', fontsize=55)
             plt.xlabel('Min Rubin mag', fontsize=55)
-            plt.xticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2], fontsize=45)
-            plt.yticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2], fontsize=45)
+            plt.xticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2]+0.5, fontsize=45)
+            plt.yticks(np.arange(len(xmags))[::2], np.round(xmags, 2)[::2]+0.5, fontsize=45)
             plt.savefig('mag_distribution.png')
             plt.show()
 

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9db324e6-0db6-4473-ab50-3639245a8050" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
-    </list>
+    <list default="true" id="9db324e6-0db6-4473-ab50-3639245a8050" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +25,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mr_tools/pictures.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="666">
+            <state relative-caret-position="3225">
               <caret line="219" column="27" selection-start-line="219" selection-start-column="27" selection-end-line="219" selection-end-column="27" />
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
@@ -39,8 +37,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mr_tools/simulations.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-12">
-              <caret line="700" column="46" selection-start-line="700" selection-start-column="46" selection-end-line="700" selection-end-column="46" />
+            <state relative-caret-position="165">
+              <caret line="710" column="10" lean-forward="true" selection-start-line="710" selection-start-column="10" selection-end-line="710" selection-end-column="10" />
               <folding>
                 <element signature="e#1#19#0" expanded="true" />
               </folding>
@@ -90,7 +88,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="111" />
+    <option name="x" value="1680" />
+    <option name="y" value="25" />
     <option name="width" value="1080" />
     <option name="height" value="965" />
   </component>
@@ -100,6 +99,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -116,11 +116,10 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -148,7 +147,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="111" width="1080" height="965" extended-state="0" />
+    <frame x="1680" y="25" width="1080" height="965" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24929178" />
@@ -202,7 +201,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mr_tools/pictures.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="666">
+        <state relative-caret-position="3225">
           <caret line="219" column="27" selection-start-line="219" selection-start-column="27" selection-end-line="219" selection-end-column="27" />
           <folding>
             <element signature="e#0#13#0" expanded="true" />
@@ -212,8 +211,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mr_tools/simulations.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-12">
-          <caret line="700" column="46" selection-start-line="700" selection-start-column="46" selection-end-line="700" selection-end-column="46" />
+        <state relative-caret-position="165">
+          <caret line="710" column="10" lean-forward="true" selection-start-line="710" selection-start-column="10" selection-end-line="710" selection-end-column="10" />
           <folding>
             <element signature="e#1#19#0" expanded="true" />
           </folding>
