@@ -200,28 +200,21 @@ class Pictures:
 
         cube = np.zeros((len(self.channels), self.shape[0], self.shape[1]))
         for i in range(ns):
-
             # Magnitudes
             if picture != None:
                 if use_cat:
-                    magmin = 10
-                    while magmin <20:
+                    magmini = 19.9
+                    while magmini <magmin:
                         ind = np.int(np.random.rand(1)*l_cat)
                         mag0 = np.random.rand(1) * (magmax-magmin) + magmin
 
                         mag = mags[ind] + mag0 - np.min(mags[ind])
-                        magmin = np.min(mag)
+                        magmini = np.min(mag)
                 else:
                     mag0 = np.random.rand(1) * (magmax-magmin) + magmin
-                    mag = mag0 + np.random.randn(len(self.channels)) * np.random.rand(1) * 1.5
-                #mag[mag > magmax] = magmax - np.random.rand(len(mag[mag > magmax]))
-                mag[mag < magmin] = magmin + np.random.rand(len(mag[mag < magmin]))
+                    mag = mag0 + np.random.randn(len(self.channels))
             else:
-                maxmax = 21
-                mag0 = np.random.rand(1) * (magmax-magmin) + magmin
-                mag = mag0 + np.random.randn(len(self.channels)) * np.random.randn(1)*1.5
-                #mag[mag > magmax] = magmax - np.random.rand(len(mag[mag > magmax]))
-                mag[mag < magmin] = magmin + np.random.rand(len(mag[mag < magmin]))
+                mag = np.random.rand(len(self.channels)) * (magmax-magmin) + magmin
 
             if index == None:
                 # Morphology
@@ -309,7 +302,6 @@ class Pictures:
 
             ## Re-draw it (with the correct fulx)
             psfs.append(psf)
-
-        return psfs_obj, psf
+        return psfs_obj, psfs
 
 
