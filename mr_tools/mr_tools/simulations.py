@@ -205,14 +205,9 @@ class Simulation:
                             elif self.results[i]['resolution'] == 'High resolution':
                                 r.initialize_sources(ks, catalog_true, morph=pic_hr.parametrics)
                             elif self.results[i]['resolution'] == 'Low resolution':
-                                r.initialize_sources(ks, catalog_true)
+                                r.initialize_sources(ks, catalog_true, morph=pic_lr.parametrics)
                         else:
-                            if self.results[i]['resolution'] == 'Joint processing':
-                                r.initialize_sources(ks, morph=pic_hr.parametrics)
-                            elif self.results[i]['resolution'] == 'High resolution':
-                                r.initialize_sources(ks, morph=pic_hr.parametrics)
-                            elif self.results[i]['resolution'] == 'Low resolution':
-                                r.initialize_sources(ks)
+                            r.initialize_sources(ks)
                     ############RUNNING things#############
                     if norms is not None:
                         norm = norms[1]

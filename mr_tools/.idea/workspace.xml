@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="9db324e6-0db6-4473-ab50-3639245a8050" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Reconstruction_test/Reconstruction_comparison.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/../Reconstruction_test/Reconstruction_comparison.ipynb" afterDir="false" />
@@ -9,6 +10,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mr_tools/galsim_compare_tools.py" beforeDir="false" afterPath="$PROJECT_DIR$/mr_tools/galsim_compare_tools.py" afterDir="false" />
     </list>
+=======
+    <list default="true" id="9db324e6-0db6-4473-ab50-3639245a8050" name="Default Changelist" comment="" />
+>>>>>>> ad18f2b291e8e9509ca0f9681ae1915522581e96
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,8 +36,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mr_tools/pictures.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="225">
               <caret line="15" column="24" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
+=======
+            <state relative-caret-position="3225">
+              <caret line="219" column="27" selection-start-line="219" selection-start-column="27" selection-end-line="219" selection-end-column="27" />
+>>>>>>> ad18f2b291e8e9509ca0f9681ae1915522581e96
               <folding>
                 <element signature="e#0#13#0" expanded="true" />
               </folding>
@@ -44,8 +53,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mr_tools/simulations.py">
           <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
             <state relative-caret-position="10815">
               <caret line="727" column="33" selection-start-line="727" selection-start-column="33" selection-end-line="727" selection-end-column="33" />
+=======
+            <state relative-caret-position="165">
+              <caret line="710" column="10" lean-forward="true" selection-start-line="710" selection-start-column="10" selection-end-line="710" selection-end-column="10" />
+>>>>>>> ad18f2b291e8e9509ca0f9681ae1915522581e96
               <folding>
                 <element signature="e#1#19#0" expanded="true" />
               </folding>
@@ -95,8 +109,13 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
+<<<<<<< HEAD
     <option name="x" value="548" />
     <option name="y" value="32" />
+=======
+    <option name="x" value="1680" />
+    <option name="y" value="25" />
+>>>>>>> ad18f2b291e8e9509ca0f9681ae1915522581e96
     <option name="width" value="1080" />
     <option name="height" value="965" />
   </component>
@@ -106,6 +125,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -122,7 +142,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -154,7 +173,11 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
+<<<<<<< HEAD
     <frame x="548" y="32" width="1080" height="965" extended-state="0" />
+=======
+    <frame x="1680" y="25" width="1080" height="965" extended-state="0" />
+>>>>>>> ad18f2b291e8e9509ca0f9681ae1915522581e96
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24929178" />
@@ -208,8 +231,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mr_tools/pictures.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="225">
           <caret line="15" column="24" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
+=======
+        <state relative-caret-position="3225">
+          <caret line="219" column="27" selection-start-line="219" selection-start-column="27" selection-end-line="219" selection-end-column="27" />
+>>>>>>> ad18f2b291e8e9509ca0f9681ae1915522581e96
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
@@ -218,8 +246,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mr_tools/galsim_compare_tools.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
         <state relative-caret-position="250">
           <caret line="158" column="34" lean-forward="true" selection-start-line="158" selection-start-column="34" selection-end-line="158" selection-end-column="34" />
+=======
+        <state relative-caret-position="165">
+          <caret line="710" column="10" lean-forward="true" selection-start-line="710" selection-start-column="10" selection-end-line="710" selection-end-column="10" />
+>>>>>>> ad18f2b291e8e9509ca0f9681ae1915522581e96
           <folding>
             <element signature="e#0#13#0" expanded="true" />
           </folding>
