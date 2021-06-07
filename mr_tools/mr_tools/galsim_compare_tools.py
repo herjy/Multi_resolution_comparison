@@ -1,5 +1,6 @@
 import galsim
 import scarlet
+import numpy as np
 from . import pictures
 
 center_ra = 19.3*galsim.degrees     # The RA, Dec of the center of the image on the sky
@@ -141,6 +142,52 @@ def interp_galsim(data_hr, data_lr, diff_psf, angle, h_hr, h_lr):
 
     return interp_gal
 
+
+def interp_galsim_sinc(data_hr, data_lr, diff_psf, angle, h_hr, h_lr):
+    '''Apply resampling from galsim
+
+    Prameters
+    ---------
+    data_hr: galsim Image
+        galsim Image object with the high resolution simulated image and its WCS
+    data_lr: galsim Image
+        galsim Image object with the low resolution simulated image and its WCS
+    diff_hr: numpy array
+        difference kernel betwee the high and low resolution psf
+    angle: float
+        angle between high and low resolution images
+    h_hr: float
+        scale of the high resolution pixel (arcsec)
+    h_lr: float
+        scale of the low resolution pixel (arcsec)
+
+    Returns
+    -------
+    interp_gal: galsim.Image
+        image interpolated at low resolution
+    '''
+    # Load data
+    im_hr = data_hr[None, :, :]
+    im_lr = data_lr[None, :, :]
+    _,n_hr,n_hr = im_hr.shape
+    _,n_lr,n_lr = im_lr.shape
+
+    # Interpolate hr image
+    gal_hr = galsim.InterpolatedImage(galsim.Image(im_hr[0]),
+                                      scale = h_hr,
+                                      gsparams=galsim.GSParams(kvalue_accuracy=10**-3.5),
+                                      x_interpolant='Sinc')
+
+    # Rotate hr galaxy to lr frame
+    rot_gal = gal_hr.rotate(galsim.Angle(angle, galsim.radians))
+
+    # Convolve hr galaxy by diff kernel at hr
+    conv_gal = galsim.Convolve(rot_gal, diff_psf)
+
+    # Downsamples to low resolution
+    interp_gal = conv_gal.drawImage(nx=n_lr,ny=n_lr, scale=h_lr, method='no_pixel',)
+
+    return interp_gal
 
 
 
